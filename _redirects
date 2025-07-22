@@ -1,0 +1,3 @@
+# Redirect rule for /kit
+
+/kit    https://mootkit.staging.glide.page    301
