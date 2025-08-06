@@ -4,3 +4,7 @@
 # Redirect rule for /BRS-LIS
 
 /BRS-LIS    https://live.flighty.app/2c602d9e8-a5c2-4326-9e9f-575c1bd81359    301
+
+# Redirect rule for /MAD/BRS
+
+/BRS-MAD    https://live.flighty.app/2519832fd-0147-4e19-a7c0-c672b6de6d1a    301
