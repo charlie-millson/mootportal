@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charlie's Scouting Life</title>
+    <!-- Google Fonts: Nunito Sans, the official Scout brand font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;700;800;900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Nunito Sans', sans-serif;
+            background-color: #ffffff;
+        }
+        /* Custom colors based on Scout brand guidelines */
+        .bg-scouts-purple { background-color: #7413dc; }
+        .text-scouts-purple { color: #7413dc; }
+        .bg-scouts-teal { background-color: #00a794; }
+        .bg-scouts-red { background-color: #e22e12; }
+        .bg-scouts-yellow { background-color: #ffe627; }
+
+        /* Custom SVG for Fleur-de-lis, as requested by the user */
+        .fleur-de-lis {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            fill: currentColor;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+    
+    <!-- Hero Section -->
+    <header class="bg-scouts-purple text-white py-16 px-4 md:px-8 text-center rounded-b-3xl shadow-xl">
+        <div class="max-w-4xl mx-auto">
+            <svg class="fleur-de-lis text-white mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path d="M256 0c-40.4 0-73.8 28.5-80 67.5C125.8 77.8 89.2 113.8 81.3 156.4 56.4 149 29 160.8 13.6 182.2c-15.4 21.4-16.1 50.8-1.7 72.8 14.3 22 41.5 32.5 67.5 25.2-1.2 5.1-1.9 10.3-1.9 15.6 0 102.7 75.2 188.7 172.5 204.2-11.4 3.7-22.7 6.1-33.8 7.3-25.1 2.8-44.4 21.4-44.4 46.8s19.3 44 44.4 46.8c133.5 14.8 243.6-79.3 260.6-224.2 1.3-11.3-.2-22.9-4.5-34.1 48.7-20.9 83.3-68.5 83.3-124.9 0-77.5-63.5-140.5-141.5-140.5-2.2 0-4.4.1-6.6.2C329.8 28.5 296.4 0 256 0zm-15.1 190.5c-4.2-16.1-2.9-33.1 3.5-48.4 6.4-15.3 17.5-28.7 31.8-37.5 14.3-8.8 31.2-12.8 48.4-11.4 17.2 1.4 33.7 9.5 46.7 22.8 13.1 13.3 21.9 29.8 25.8 47.9 3.9 18-1.5 36.6-15.2 51.5-13.6 14.9-33.4 25.3-54.7 29.5-21.3 4.2-43.1 1.7-62.8-7.5z"/>
+            </svg>
+            <h1 class="text-4xl md:text-6xl font-black mb-4">Charlie</h1>
+            <p class="text-xl md:text-2xl font-bold mb-6">Do more. Learn more. Be more.</p>
+            <a href="#about" class="bg-white text-scouts-purple font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-100 transition duration-300">My Scouting Journey</a>
+        </div>
+    </header>
+
+    <!-- About Me Section -->
+    <section id="about" class="py-16 px-4 md:px-8 max-w-5xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-black text-center mb-10 text-scouts-purple">About My Scouting Life</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+                <p class="text-lg leading-relaxed font-regular mb-4">
+                    As a Scout, I've had the incredible opportunity to develop "Skills for Life" and find a place of belonging. My journey has been filled with adventure, teamwork, and moments of real resilience.
+                </p>
+                <p class="text-lg leading-relaxed font-regular">
+                    From my early days in Cubs to my current role as a leader, Scouting has taught me to be confident, to challenge myself, and to always approach life with an optimistic attitude. It's more than just a hobby; it's a foundation for a positive future.
+                </p>
+            </div>
+            <div class="relative w-full h-64 md:h-96 rounded-lg overflow-hidden shadow-md">
+                <!-- Placeholder image for the user to replace -->
+                <img src="https://placehold.co/800x600/e22e12/ffffff?text=Add+your+photo" alt="Charlie in their scouting gear" class="object-cover w-full h-full">
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="bg-scouts-purple text-white py-16 px-4 md:px-8 rounded-t-3xl shadow-xl">
+        <div class="max-w-5xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-black mb-10">Skills for Life</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Skill 1 -->
+                <div class="bg-scouts-teal p-6 rounded-lg shadow-md flex flex-col items-center">
+                    <span class="text-5xl mb-3" role="img" aria-label="Teamwork icon">🤝</span>
+                    <h3 class="text-xl font-bold mb-2">Teamwork</h3>
+                    <p class="font-light">Learning to work together to achieve a common goal.</p>
+                </div>
+                <!-- Skill 2 -->
+                <div class="bg-scouts-red p-6 rounded-lg shadow-md flex flex-col items-center">
+                    <span class="text-5xl mb-3" role="img" aria-label="Leadership icon">🧭</span>
+                    <h3 class="text-xl font-bold mb-2">Leadership</h3>
+                    <p class="font-light">Developing the confidence to guide and inspire others.</p>
+                </div>
+                <!-- Skill 3 -->
+                <div class="bg-scouts-yellow p-6 text-scouts-purple rounded-lg shadow-md flex flex-col items-center">
+                    <span class="text-5xl mb-3" role="img" aria-label="Resilience icon">💪</span>
+                    <h3 class="text-xl font-bold mb-2">Resilience</h3>
+                    <p class="font-light">Pushing through challenges and bouncing back from setbacks.</p>
+                </div>
+                <!-- Skill 4 -->
+                <div class="bg-scouts-purple p-6 rounded-lg shadow-md flex flex-col items-center">
+                    <span class="text-5xl mb-3" role="img" aria-label="Problem Solving icon">🧠</span>
+                    <h3 class="text-xl font-bold mb-2">Problem-Solving</h3>
+                    <p class="font-light">Tackling new situations with creativity and initiative.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 px-4 md:px-8 max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-black text-scouts-purple mb-4">Let's Connect</h2>
+        <p class="text-lg leading-relaxed font-regular mb-8">
+            Interested in learning more about Scouting or have a question? Feel free to get in touch!
+        </p>
+        <a href="mailto:charlie@example.com" class="bg-scouts-purple text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-700 transition duration-300">
+            Send an Email
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-6 px-4 text-center">
+        <p class="text-sm">
+            &copy; 2024 Charlie. All rights reserved.
+        </p>
+        <p class="text-sm font-bold mt-2">
+            #SkillsForLife
+        </p>
+    </footer>
+
+</body>
+</html>
