@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Username Extractor</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to apply the Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style for the copy notification */
+        #copy-notification {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-4xl mx-auto bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 md:p-8 space-y-6">
+        
+        <!-- Header Section -->
+        <div class="text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Username Extractor</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-2">Paste your JSON data below to extract all usernames.</p>
+        </div>
+
+        <!-- Main Grid Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Input Area -->
+            <div class="space-y-4">
+                <label for="jsonData" class="block text-lg font-semibold text-slate-700 dark:text-slate-300">Paste Your JSON Data Here:</label>
+                <textarea id="jsonData" rows="15" class="w-full p-4 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition duration-200" placeholder="[&#10;  {&#10;    &quot;string_list_data&quot;: [ ... ]&#10;  },&#10;  ...&#10;]&#10;or&#10;{&#10;  &quot;relationships_following&quot;: [ ... ]&#10;}"></textarea>
+                <button id="extractBtn" class="w-full bg-sky-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 dark:focus:ring-offset-slate-900 transition-transform transform hover:scale-105">
+                    Extract Usernames
+                </button>
+            </div>
+
+            <!-- Output Area -->
+            <div class="space-y-4">
+                <label for="result" class="block text-lg font-semibold text-slate-700 dark:text-slate-300">Extracted Usernames:</label>
+                <textarea id="result" rows="15" readonly class="w-full p-4 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition duration-200" placeholder="Usernames will appear here..."></textarea>
+                <button id="copyBtn" class="w-full bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 dark:focus:ring-offset-slate-900 transition-transform transform hover:scale-105">
+                    Copy to Clipboard
+                </button>
+            </div>
+
+        </div>
+        
+        <!-- Error Message Box -->
+        <div id="error-message" class="hidden p-4 mt-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+            <span class="font-medium">Error!</span> Invalid JSON data. Please check your input and try again.
+        </div>
+    </div>
+
+    <!-- Copy Notification -->
+    <div id="copy-notification" class="fixed bottom-5 right-5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-2 px-5 rounded-lg shadow-lg opacity-0 transform translate-y-2">
+        Copied to clipboard!
+    </div>
+
+    <script>
+        // Get references to the DOM elements
+        const extractBtn = document.getElementById('extractBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const jsonDataInput = document.getElementById('jsonData');
+        const resultTextarea = document.getElementById('result');
+        const copyNotification = document.getElementById('copy-notification');
+        const errorMessage = document.getElementById('error-message');
+
+        // Function to extract usernames from the JSON data
+        const extractUsernames = () => {
+            const rawData = jsonDataInput.value.trim();
+            errorMessage.classList.add('hidden'); // Hide any previous errors
+
+            if (!rawData) {
+                resultTextarea.value = 'Please paste some data first.';
+                return;
+            }
+
+            try {
+                // Parse the JSON data
+                const data = JSON.parse(rawData);
+                let dataArray;
+
+                // Check if the parsed data is an array directly
+                if (Array.isArray(data)) {
+                    dataArray = data;
+                } 
+                // If not an array, check if it's an object and find the first property that contains an array
+                else if (typeof data === 'object' && data !== null) {
+                    const key = Object.keys(data).find(k => Array.isArray(data[k]));
+                    if (key) {
+                        dataArray = data[key];
+                    } else {
+                         throw new Error("Input is an object but contains no array property.");
+                    }
+                } 
+                // If it's neither, it's an invalid format
+                else {
+                    throw new Error("Input is not a valid JSON array or an object containing an array.");
+                }
+
+                // Map through the found array to extract the 'value' property
+                const usernames = dataArray
+                    .map(item => item?.string_list_data?.[0]?.value)
+                    .filter(username => username); // Filter out any undefined or null values
+
+                if (usernames.length > 0) {
+                    // Join the usernames with a newline character and display them
+                    resultTextarea.value = usernames.join('\n');
+                } else {
+                    resultTextarea.value = 'No usernames found in the provided data structure.';
+                }
+
+            } catch (error) {
+                // Handle JSON parsing or other errors
+                console.error("Extraction Error:", error);
+                errorMessage.classList.remove('hidden');
+                resultTextarea.value = ''; // Clear the result on error
+            }
+        };
+
+        // Function to copy the extracted usernames to the clipboard
+        const copyToClipboard = () => {
+            // Check if there is content to copy
+            if (resultTextarea.value) {
+                // Use the older document.execCommand for broader compatibility within iframes
+                resultTextarea.select();
+                document.execCommand('copy');
+                
+                // Show the notification
+                copyNotification.classList.remove('opacity-0', 'translate-y-2');
+                copyNotification.classList.add('opacity-100', 'translate-y-0');
+
+                // Hide the notification after a few seconds
+                setTimeout(() => {
+                    copyNotification.classList.remove('opacity-100', 'translate-y-0');
+                    copyNotification.classList.add('opacity-0', 'translate-y-2');
+                }, 2000);
+            }
+        };
+
+        // Add event listeners to the buttons
+        extractBtn.addEventListener('click', extractUsernames);
+        copyBtn.addEventListener('click', copyToClipboard);
+
+    </script>
+</body>
+</html>
