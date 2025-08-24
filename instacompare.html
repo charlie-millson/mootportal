@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Follow Analyzer</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to apply the Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style for the copy notification */
+        #copy-notification {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        /* Custom file input styling */
+        .file-input-label {
+            cursor: pointer;
+            border: 2px dashed #9ca3af;
+            border-radius: 0.5rem;
+            padding: 2rem 1rem;
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+        }
+        .file-input-label:hover {
+            background-color: #f3f4f6;
+            border-color: #6b7280;
+        }
+        .file-input-label.dark:hover {
+            background-color: #374151;
+            border-color: #9ca3af;
+        }
+        .file-input-label.dragover {
+            background-color: #e0f2fe;
+            border-color: #3b82f6;
+        }
+        .file-input-label.dark.dragover {
+             background-color: #1e3a8a;
+             border-color: #60a5fa;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-5xl mx-auto bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 md:p-8 space-y-6">
+        
+        <!-- Header Section -->
+        <div class="text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">Instagram Follow Analyzer</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-2">Upload your 'followers' and 'following' JSON files to see who doesn't follow you back.</p>
+        </div>
+
+        <!-- File Upload Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Followers File Input -->
+            <div>
+                <label for="followersFile" class="block text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2">1. Upload Followers File</label>
+                <label for="followersFile" class="file-input-label dark:border-slate-600 dark:text-slate-400 flex flex-col items-center justify-center text-center">
+                    <svg class="w-10 h-10 mb-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-4-4V7a4 4 0 014-4h5l4 4v5a4 4 0 01-4 4H7z"></path></svg>
+                    <span class="font-semibold" id="followers-file-name">Click to upload or drag & drop</span>
+                    <span class="text-xs text-slate-500">followers_1.json</span>
+                </label>
+                <input type="file" id="followersFile" class="hidden" accept=".json">
+            </div>
+            <!-- Following File Input -->
+            <div>
+                <label for="followingFile" class="block text-lg font-semibold text-slate-700 dark:text-slate-300 mb-2">2. Upload Following File</label>
+                 <label for="followingFile" class="file-input-label dark:border-slate-600 dark:text-slate-400 flex flex-col items-center justify-center text-center">
+                    <svg class="w-10 h-10 mb-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-4-4V7a4 4 0 014-4h5l4 4v5a4 4 0 01-4 4H7z"></path></svg>
+                    <span class="font-semibold" id="following-file-name">Click to upload or drag & drop</span>
+                    <span class="text-xs text-slate-500">following.json</span>
+                </label>
+                <input type="file" id="followingFile" class="hidden" accept=".json">
+            </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="text-center">
+            <button id="compareBtn" class="w-full md:w-1/2 bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500 dark:focus:ring-offset-slate-900 transition-transform transform hover:scale-105 disabled:bg-slate-400 disabled:cursor-not-allowed" disabled>
+                Analyze
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-container" class="hidden pt-6 border-t border-slate-200 dark:border-slate-700">
+             <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Analysis Results</h2>
+                <button id="copyBtn" class="bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 dark:focus:ring-offset-slate-900 transition-transform transform hover:scale-105">
+                    Copy List
+                </button>
+            </div>
+            <p id="results-summary" class="text-slate-600 dark:text-slate-300 mb-4"></p>
+            <textarea id="result" rows="10" readonly class="w-full p-4 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700"></textarea>
+        </div>
+
+        <!-- Error Message Box -->
+        <div id="error-message" class="hidden p-4 mt-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert"></div>
+    </div>
+
+    <!-- Copy Notification -->
+    <div id="copy-notification" class="fixed bottom-5 right-5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-2 px-5 rounded-lg shadow-lg opacity-0 transform translate-y-2">
+        Copied to clipboard!
+    </div>
+
+    <script>
+        // DOM element references
+        const followersFileInput = document.getElementById('followersFile');
+        const followingFileInput = document.getElementById('followingFile');
+        const followersLabel = document.querySelector('label[for="followersFile"]');
+        const followingLabel = document.querySelector('label[for="followingFile"]');
+        const followersFileName = document.getElementById('followers-file-name');
+        const followingFileName = document.getElementById('following-file-name');
+        const compareBtn = document.getElementById('compareBtn');
+        const resultsContainer = document.getElementById('results-container');
+        const resultsSummary = document.getElementById('results-summary');
+        const resultTextarea = document.getElementById('result');
+        const copyBtn = document.getElementById('copyBtn');
+        const copyNotification = document.getElementById('copy-notification');
+        const errorMessage = document.getElementById('error-message');
+
+        let followersData = null;
+        let followingData = null;
+
+        // --- File Handling and UI Updates ---
+
+        // Function to handle file input changes
+        const handleFileSelect = (event, type) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const fileNameEl = type === 'followers' ? followersFileName : followingFileName;
+            fileNameEl.textContent = file.name;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (type === 'followers') followersData = data;
+                    if (type === 'following') followingData = data;
+                    checkFilesReady();
+                } catch (err) {
+                    showError(`Error parsing ${file.name}. Please ensure it's a valid JSON file.`);
+                }
+            };
+            reader.readAsText(file);
+        };
+
+        // Function to enable the compare button when both files are loaded
+        const checkFilesReady = () => {
+            if (followersData && followingData) {
+                compareBtn.disabled = false;
+            }
+        };
+
+        // --- Drag and Drop Functionality ---
+        
+        const setupDragAndDrop = (label, input) => {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                label.addEventListener(eventName, preventDefaults, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                label.addEventListener(eventName, () => label.classList.add('dragover'), false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                label.addEventListener(eventName, () => label.classList.remove('dragover'), false);
+            });
+
+            label.addEventListener('drop', (e) => {
+                input.files = e.dataTransfer.files;
+                // Manually trigger change event
+                const event = new Event('change', { bubbles: true });
+                input.dispatchEvent(event);
+            }, false);
+        };
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // --- Core Logic ---
+
+        // Generic function to extract usernames from different JSON structures
+        const extractUsernames = (data) => {
+            let dataArray;
+            if (Array.isArray(data)) {
+                dataArray = data;
+            } else if (typeof data === 'object' && data !== null) {
+                const key = Object.keys(data).find(k => Array.isArray(data[k]));
+                if (key) {
+                    dataArray = data[key];
+                } else {
+                    throw new Error("Uploaded object does not contain a list of users.");
+                }
+            } else {
+                throw new Error("Invalid JSON format.");
+            }
+            return new Set(dataArray.map(item => item?.string_list_data?.[0]?.value).filter(Boolean));
+        };
+
+        // Main comparison function
+        const analyzeFollows = () => {
+            hideError();
+            try {
+                const followersSet = extractUsernames(followersData);
+                const followingSet = extractUsernames(followingData);
+
+                const notFollowingBack = [...followingSet].filter(user => !followersSet.has(user));
+
+                resultsSummary.textContent = `You are following ${followingSet.size} users and have ${followersSet.size} followers. Found ${notFollowingBack.length} users who don't follow you back.`;
+                resultTextarea.value = notFollowingBack.join('\n');
+                resultsContainer.classList.remove('hidden');
+
+            } catch (error) {
+                showError(error.message);
+                resultsContainer.classList.add('hidden');
+            }
+        };
+
+        // --- Utility Functions ---
+
+        const showError = (message) => {
+            errorMessage.textContent = `Error! ${message}`;
+            errorMessage.classList.remove('hidden');
+        };
+
+        const hideError = () => {
+            errorMessage.classList.add('hidden');
+        };
+
+        const copyToClipboard = () => {
+            if (resultTextarea.value) {
+                resultTextarea.select();
+                document.execCommand('copy');
+                
+                copyNotification.classList.remove('opacity-0', 'translate-y-2');
+                copyNotification.classList.add('opacity-100', 'translate-y-0');
+
+                setTimeout(() => {
+                    copyNotification.classList.remove('opacity-100', 'translate-y-0');
+                    copyNotification.classList.add('opacity-0', 'translate-y-2');
+                }, 2000);
+            }
+        };
+
+        // --- Event Listeners ---
+        followersFileInput.addEventListener('change', (e) => handleFileSelect(e, 'followers'));
+        followingFileInput.addEventListener('change', (e) => handleFileSelect(e, 'following'));
+        compareBtn.addEventListener('click', analyzeFollows);
+        copyBtn.addEventListener('click', copyToClipboard);
+        
+        // Initialize drag and drop
+        setupDragAndDrop(followersLabel, followersFileInput);
+        setupDragAndDrop(followingLabel, followingFileInput);
+
+    </script>
+</body>
+</html>
